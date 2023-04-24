@@ -1,6 +1,7 @@
 package slacker
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/slack-go/slack"
@@ -48,6 +49,9 @@ type MessageEvent struct {
 	// BotID of the bot that sent this message. If a bot did not send this
 	// message, this will be an empty string.
 	BotID string
+
+	// Payload of the slash command that sent this message.
+	Payload json.RawMessage
 }
 
 // IsThread indicates if a message event took place in a thread.
@@ -103,6 +107,7 @@ func NewMessageEvent(slacker *Slacker, event interface{}, req *socketmode.Reques
 			Text:        fmt.Sprintf("%s %s", ev.Command[1:], ev.Text),
 			Data:        req,
 			Type:        req.Type,
+			Payload:     req.Payload,
 		}
 	default:
 		return nil
